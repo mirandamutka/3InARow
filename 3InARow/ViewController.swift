@@ -11,7 +11,9 @@ class ViewController: UIViewController {
     
     var currentPlayer = 1 // Star
     var currentGame = true
-    var gameState = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    var gameState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    var gameTurn = 0
+    var isWinner = false
     
     let winCombos = [
         [0, 1, 2],
@@ -24,19 +26,29 @@ class ViewController: UIViewController {
         [2, 4, 6]
     ]
     
+    func disableButton() {
+        for tag in 1...9 {
+            let button = view.viewWithTag(tag) as! UIButton
+            button.isEnabled = false
+        }
+    }
     
     @IBAction func buttonAction(_ sender: AnyObject) {
         if(gameState[sender.tag-1] == 0 && currentGame == true) {
             gameState[sender.tag-1] = currentPlayer
             if(currentPlayer == 1) {
+                playerNameLabel.text = "Turn: 🌙"
                 sender.setImage(UIImage(named: "star"), for: UIControl.State())
                 currentPlayer = 2
             }
             else {
+                playerNameLabel.text = "Turn: ⭐️"
                 sender.setImage(UIImage(named: "moon"), for: UIControl.State())
                 currentPlayer = 1
             }
         }
+        
+        gameTurn+=1
         
         for combo in winCombos {
             if gameState[combo[0]] != 0 && gameState[combo[0]] == gameState[combo[1]] && gameState[combo[1]] == gameState[combo[2]] {
@@ -44,15 +56,18 @@ class ViewController: UIViewController {
                 
                 if gameState[combo[0]] == 1 {
                      // Star has won
-                    playerNameLabel.text = "Star won!"
+                    playerNameLabel.text = "⭐️ won!"
+                    isWinner = true
+                    disableButton()
                 }
                 else {
                     // Moon has won
-                    playerNameLabel.text = "Moon won!"
+                    playerNameLabel.text = "🌙 won!"
+                    isWinner = true
+                    disableButton()
                 }
                 
                 restartButton.isHidden = false
-                playerNameLabel.isHidden = false
                 
             }
         }
@@ -66,9 +81,8 @@ class ViewController: UIViewController {
             }
         }
         
-        if currentGame == false {
+        if gameTurn == 9 && isWinner == false {
             playerNameLabel.text = "It's a draw!"
-            playerNameLabel.isHidden = false
             restartButton.isHidden = false
         }
         
@@ -77,27 +91,30 @@ class ViewController: UIViewController {
     @IBOutlet weak var restartButton: UIButton!
     
     @IBAction func restartButton(_ sender: AnyObject) {
-        gameState = [0, 0, 0, 0, 0, 0, 0, 0, 0]
+        gameState = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         currentGame = true
+        gameTurn = 0
+        isWinner = false
         currentPlayer = 1
         
+        playerNameLabel.text = "Turn: ⭐️"
+        
         restartButton.isHidden = true
-        playerNameLabel.isHidden = true
 
         for tag in 1...9 {
             let button = view.viewWithTag(tag) as! UIButton
             button.setImage(nil, for: UIControl.State())
+            button.isEnabled = true
         }
         
     }
     
     @IBOutlet weak var playerNameLabel: UILabel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        playerNameLabel.text = "PlayerName"
         // Do any additional setup after loading the view.
     }
-
 
 }
 
