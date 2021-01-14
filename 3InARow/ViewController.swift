@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     func disableButton() {
         for tag in 1...9 {
             let button = view.viewWithTag(tag) as! UIButton
+            button.adjustsImageWhenDisabled = true
             button.isEnabled = false
         }
     }
@@ -39,11 +40,17 @@ class ViewController: UIViewController {
             if(currentPlayer == 1) {
                 playerNameLabel.text = "Turn: 🌙"
                 sender.setImage(UIImage(named: "star"), for: UIControl.State())
+                let buttonDisabled = sender as? UIButton
+                buttonDisabled?.isEnabled = false
+                buttonDisabled?.adjustsImageWhenDisabled = false
                 currentPlayer = 2
             }
             else {
                 playerNameLabel.text = "Turn: ⭐️"
                 sender.setImage(UIImage(named: "moon"), for: UIControl.State())
+                let buttonDisabled = sender as? UIButton
+                buttonDisabled?.isEnabled = false
+                buttonDisabled?.adjustsImageWhenDisabled = false
                 currentPlayer = 1
             }
         }
@@ -55,13 +62,11 @@ class ViewController: UIViewController {
                 currentGame = false
                 
                 if gameState[combo[0]] == 1 {
-                     // Star has won
                     playerNameLabel.text = "⭐️ won!"
                     isWinner = true
                     disableButton()
                 }
                 else {
-                    // Moon has won
                     playerNameLabel.text = "🌙 won!"
                     isWinner = true
                     disableButton()
@@ -113,7 +118,6 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
     }
 
 }
